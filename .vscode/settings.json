@@ -1,0 +1,9 @@
+{
+  "emmet.showExpandedAbbreviation": "always",
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  "emmet.syntaxProfiles": {
+    "javascript": "jsx"
+  }
+}
