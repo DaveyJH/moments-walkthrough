@@ -14,8 +14,11 @@ import Image from "react-bootstrap/Image";
 import Container from "react-bootstrap/Container";
 
 import axios from "axios";
+import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
 
 function SignInForm() {
+  const setCurrentUser = useSetCurrentUser();
+
   const [errors, setErrors] = useState({});
   const [signInData, setSignInData] = useState({
     username: "",
@@ -34,7 +37,8 @@ function SignInForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/dj-rest-auth/login/", signInData);
+      const { data } = await axios.post("/dj-rest-auth/login/", signInData);
+      setCurrentUser(data.user);
       history.push("/");
     } catch (err) {
       setErrors(err.response?.data);

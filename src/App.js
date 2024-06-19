@@ -6,27 +6,30 @@ import "./api/axiosDefaults";
 import SignUpForm from "./pages/auth/SignUpForm";
 import SignInForm from "./pages/auth/SignInForm";
 
+
 function App() {
+
+
   return (
-    <div className={styles.App}>
-      <NavBar></NavBar>
-      <Container className={styles.Main}>
-        <Switch>
-          <Route exact path="/" render={() => <h1>Home page</h1>}></Route>
-          <Route
-            exact
-            path="/signin"
-            render={() => <SignInForm></SignInForm>}
-          ></Route>
-          <Route
-            exact
-            path="/signup"
-            render={() => <SignUpForm></SignUpForm>}
-          ></Route>
-          <Route render={() => <p>Page not found</p>}></Route>
-        </Switch>
-      </Container>
-    </div>
+        <div className={styles.App}>
+          <NavBar></NavBar>
+          <Container className={styles.Main}>
+            <Switch>
+              <Route exact path="/" render={() => <h1>Home page</h1>}></Route>
+              <Route
+                exact
+                path="/signin"
+                render={() => <SignInForm></SignInForm>}
+              ></Route>
+              <Route
+                exact
+                path="/signup"
+                render={() => <SignUpForm></SignUpForm>}
+              ></Route>
+              <Route render={() => <p>Page not found</p>}></Route>
+            </Switch>
+          </Container>
+        </div>
   );
 }
 
