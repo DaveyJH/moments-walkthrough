@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
@@ -13,6 +13,8 @@ import styles from "../../assets/css/PostCreateEditForm.module.css";
 import appStyles from "../../assets/css/App.module.css";
 import btnStyles from "../../assets/css/Button.module.css";
 import Asset from "../../components/Asset";
+import { useHistory } from "react-router-dom";
+import { axiosReq } from "../../api/axiosDefaults";
 
 function PostCreateForm() {
   const [errors, setErrors] = useState({});
@@ -23,6 +25,9 @@ function PostCreateForm() {
   });
   const { title, content, image } = postData;
 
+  const imageInput = useRef(null);
+  const history = useHistory();
+
   const handleChange = (e) => {
     setPostData({
       ...postData,
@@ -30,9 +35,26 @@ function PostCreateForm() {
     });
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("content", content);
+    formData.append("image", imageInput.current.files[0]);
+    try {
+      const {data} = await axiosReq.post("/posts/", formData);
+      history.push(`/posts/${data.id}`);
+    } catch (err) {
+      console.log(err);
+      if (err.response?.status !== 401) {
+        setErrors(err.response?.data);
+      }
+    }
+  }
+
   const handleChangeImage = (e) => {
-    URL.revokeObjectURL(image);
     if (e.target.files.length) {
+      URL.revokeObjectURL(image);
       setPostData({
         ...postData,
         image: URL.createObjectURL(e.target.files[0]),
@@ -75,7 +97,7 @@ function PostCreateForm() {
   );
 
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <Row>
         <Col className="py-2 p-0 p-md-2" md={7} lg={8}>
           <Container
@@ -110,6 +132,7 @@ function PostCreateForm() {
                 id="image-upload"
                 accept="image/*"
                 onChange={handleChangeImage}
+                ref={imageInput}
               />
             </Form.Group>
             <div className="d-md-none">{textFields}</div>
