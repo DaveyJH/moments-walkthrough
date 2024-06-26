@@ -1,6 +1,7 @@
 import React, { useRef, useState } from "react";
 
 import Form from "react-bootstrap/Form";
+import Alert from "react-bootstrap/Alert";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
@@ -42,7 +43,7 @@ function PostCreateForm() {
     formData.append("content", content);
     formData.append("image", imageInput.current.files[0]);
     try {
-      const {data} = await axiosReq.post("/posts/", formData);
+      const { data } = await axiosReq.post("/posts/", formData);
       history.push(`/posts/${data.id}`);
     } catch (err) {
       console.log(err);
@@ -50,7 +51,7 @@ function PostCreateForm() {
         setErrors(err.response?.data);
       }
     }
-  }
+  };
 
   const handleChangeImage = (e) => {
     if (e.target.files.length) {
@@ -73,7 +74,12 @@ function PostCreateForm() {
           onChange={handleChange}
         />
       </Form.Group>
-      <Form.Group controlId="username">
+      {errors.title?.map((message, i) => (
+        <Alert variant="warning" key={i}>
+          {message}
+        </Alert>
+      ))}
+      <Form.Group controlId="content">
         <Form.Label>Content</Form.Label>
         <Form.Control
           as="textarea"
@@ -83,10 +89,15 @@ function PostCreateForm() {
           onChange={handleChange}
         />
       </Form.Group>
+      {errors.content?.map((message, i) => (
+        <Alert variant="warning" key={i}>
+          {message}
+        </Alert>
+      ))}
 
       <Button
         className={`${btnStyles.Button} ${btnStyles.Blue}`}
-        onClick={() => {}}
+        onClick={() => history.goBack()}
       >
         Cancel
       </Button>
@@ -103,7 +114,7 @@ function PostCreateForm() {
           <Container
             className={`${appStyles.Content} ${styles.Container} d-flex flex-column justify-content-center`}
           >
-            <Form.Group className="text-center">
+            <Form.Group controlId="image" className="text-center">
               {image ? (
                 <>
                   <figure>
@@ -113,7 +124,9 @@ function PostCreateForm() {
                     <Form.Label
                       className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
                       htmlFor="image-upload"
-                    >Change the image</Form.Label>
+                    >
+                      Change the image
+                    </Form.Label>
                   </div>
                 </>
               ) : (
@@ -135,6 +148,11 @@ function PostCreateForm() {
                 ref={imageInput}
               />
             </Form.Group>
+            {errors.image?.map((message, i) => (
+              <Alert variant="warning" key={i}>
+                {message}
+              </Alert>
+            ))}
             <div className="d-md-none">{textFields}</div>
           </Container>
         </Col>
