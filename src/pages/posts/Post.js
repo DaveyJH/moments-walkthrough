@@ -10,14 +10,12 @@ const Post = (props) => {
   const {
     id,
     owner,
-    created_at,
     updated_at,
     title,
     content,
     image,
     profile_id,
     profile_image,
-    image_filter,
     like_id,
     comments_count,
     likes_count,
@@ -45,7 +43,7 @@ const Post = (props) => {
 
   const handleUnlike = async () => {
     try {
-      const { data } = await axiosRes.delete(`/likes/${like_id}`);
+      await axiosRes.delete(`/likes/${like_id}`);
       setPosts((prevPosts) => ({
         ...prevPosts,
         results: prevPosts.results.map((post) => (
