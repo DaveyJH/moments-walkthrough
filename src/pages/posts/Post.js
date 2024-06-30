@@ -2,9 +2,11 @@ import React from "react";
 import styles from "../../assets/css/Post.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
 import { Card, Media, OverlayTrigger, Tooltip } from "react-bootstrap";
-import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { Link } from "react-router-dom";
 import { Avatar } from "../../components/Avatar";
 import { axiosRes } from "../../api/axiosDefaults";
+import { MoreDropdown } from "../../components/MoreDropdown";
+import { useHistory } from "react-router-dom";
 
 const Post = (props) => {
   const {
@@ -20,21 +22,22 @@ const Post = (props) => {
     comments_count,
     likes_count,
     postPage,
-    setPosts
+    setPosts,
   } = props;
   const currentUser = useCurrentUser();
   const isOwner = currentUser?.username === owner;
+  const history = useHistory();
 
   const handleLike = async () => {
     try {
       const { data } = await axiosRes.post("/likes/", { post: id });
       setPosts((prevPosts) => ({
         ...prevPosts,
-        results: prevPosts.results.map((post) => (
+        results: prevPosts.results.map((post) =>
           post.id === id
-          ? {...post, likes_count: post.likes_count + 1, like_id: data.id} 
-          : {post}
-        ))
+            ? { ...post, likes_count: post.likes_count + 1, like_id: data.id }
+            : { post }
+        ),
       }));
     } catch (err) {
       console.log(err);
@@ -46,16 +49,30 @@ const Post = (props) => {
       await axiosRes.delete(`/likes/${like_id}`);
       setPosts((prevPosts) => ({
         ...prevPosts,
-        results: prevPosts.results.map((post) => (
+        results: prevPosts.results.map((post) =>
           post.id === id
-          ? {...post, likes_count: post.likes_count - 1, like_id: null} 
-          : {post}
-        ))
+            ? { ...post, likes_count: post.likes_count - 1, like_id: null }
+            : { post }
+        ),
       }));
     } catch (err) {
       console.log(err);
     }
   };
+
+  const handleEdit = () => {
+    history.push(`/posts/${id}/edit`);
+  };
+
+  const handleDelete = async () => {
+    try {
+      await axiosRes.delete(`/posts/${id}`);
+      history.goBack();
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Card className={styles.Post}>
       <Card.Body>
@@ -66,7 +83,12 @@ const Post = (props) => {
           </Link>
           <div className="d-flex align-items-center">
             <span>{updated_at}</span>
-            {isOwner && postPage && "..."}
+            {isOwner && postPage && (
+              <MoreDropdown
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            )}
           </div>
         </Media>
       </Card.Body>
