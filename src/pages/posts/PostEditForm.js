@@ -1,6 +1,4 @@
-import React, { useRef, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { axiosReq } from "../../api/axiosDefaults";
+import React, { useRef, useState, useEffect } from "react";
 
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
@@ -10,11 +8,18 @@ import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 
+import Upload from "../../assets/images/upload.png";
+
 import styles from "../../assets/css/PostCreateEditForm.module.css";
 import appStyles from "../../assets/css/App.module.css";
 import btnStyles from "../../assets/css/Button.module.css";
+import Asset from "../../components/Asset";
+import { useHistory } from "react-router-dom";
+import { axiosReq } from "../../api/axiosDefaults";
+import { useParams } from "react-router-dom";
 
-function PostCreateForm() {
+function PostEditForm() {
+  const { id } = useParams();
   const [errors, setErrors] = useState({});
   const [postData, setPostData] = useState({
     title: "",
@@ -25,6 +30,20 @@ function PostCreateForm() {
 
   const imageInput = useRef(null);
   const history = useHistory();
+
+  useEffect(() => {
+    const handleMount = async () => {
+      try {
+        const { data } = await axiosReq.get(`/posts/${id}/`);
+        const { title, content, image, is_owner } = data;
+
+        is_owner ? setPostData({ title, content, image }) : history.push("/");
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    handleMount();
+  }, [history, id]);
 
   const handleChange = (e) => {
     setPostData({
@@ -38,10 +57,13 @@ function PostCreateForm() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("content", content);
-    formData.append("image", imageInput.current.files[0]);
+    if (imageInput?.current?.files[0]) {
+      formData.append("image", imageInput.current.files[0]);
+    }
+
     try {
-      const { data } = await axiosReq.post("/posts/", formData);
-      history.push(`/posts/${data.id}`);
+      await axiosReq.put(`/posts/${id}/`, formData);
+      history.push(`/posts/${id}`);
     } catch (err) {
       console.log(err);
       if (err.response?.status !== 401) {
@@ -99,7 +121,7 @@ function PostCreateForm() {
         Cancel
       </Button>
       <Button className={`${btnStyles.Button} ${btnStyles.Blue}`} type="submit">
-        Update
+        Create
       </Button>
     </div>
   );
@@ -112,16 +134,30 @@ function PostCreateForm() {
             className={`${appStyles.Content} ${styles.Container} d-flex flex-column justify-content-center`}
           >
             <Form.Group controlId="image" className="text-center">
-              <figure>
-                <Image className={appStyles.Image} src={image} rounded />
-              </figure>
-              <div>
+              {image ? (
+                <>
+                  <figure>
+                    <Image className={appStyles.Image} src={image} rounded />
+                  </figure>
+                  <div>
+                    <Form.Label
+                      className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
+                    >
+                      Change the image
+                    </Form.Label>
+                  </div>
+                </>
+              ) : (
                 <Form.Label
-                  className={`${btnStyles.Button} ${btnStyles.Blue} btn`}
+                  className="d-flex justify-content-center"
                 >
-                  Change the image
+                  <Asset
+                    src={Upload}
+                    alt="uploader icon"
+                    message="Click or tap to upload an image"
+                  />
                 </Form.Label>
-              </div>
+              )}
               <Form.File
                 accept="image/*"
                 onChange={handleChangeImage}
@@ -144,4 +180,4 @@ function PostCreateForm() {
   );
 }
 
-export default PostCreateForm;
+export default PostEditForm;
