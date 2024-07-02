@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 import styles from "../../assets/css/SignInUpForm.module.css";
 import btnStyles from "../../assets/css/SignInUpForm.module.css";

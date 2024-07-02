@@ -14,9 +14,8 @@ import styles from "../../assets/css/PostCreateEditForm.module.css";
 import appStyles from "../../assets/css/App.module.css";
 import btnStyles from "../../assets/css/Button.module.css";
 import Asset from "../../components/Asset";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom/cjs/react-router-dom.min";
 import { axiosReq } from "../../api/axiosDefaults";
-import { useParams } from "react-router-dom";
 
 function PostEditForm() {
   const { id } = useParams();

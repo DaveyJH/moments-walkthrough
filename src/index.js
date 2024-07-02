@@ -3,9 +3,9 @@ import ReactDOM from "react-dom";
 import "./assets/css/index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
-import { BrowserRouter as Router } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom/cjs/react-router-dom.min";
 import { CurrentUserProvider } from "./contexts/CurrentUserContext";
-import { ProfileDataProvider } from "./contexts/ProfileDataContent";
+import { ProfileDataProvider } from "./contexts/ProfileDataContext";
 
 ReactDOM.render(
   <React.StrictMode>

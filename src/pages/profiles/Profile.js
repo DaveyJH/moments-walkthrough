@@ -2,7 +2,7 @@ import React from "react";
 import styles from "../../assets/css/Profile.module.css";
 import btnStyles from "../../assets/css/Button.module.css";
 import { useCurrentUser } from "../../contexts/CurrentUserContext";
-import { Link } from "react-router-dom";
+import { Link } from "react-router-dom/cjs/react-router-dom.min";
 import { Avatar } from "../../components/Avatar";
 import Button from "react-bootstrap/Button";
 
