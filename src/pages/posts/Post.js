@@ -38,7 +38,7 @@ const Post = (props) => {
         results: prevPosts.results.map((post) =>
           post.id === id
             ? { ...post, likes_count: post.likes_count + 1, like_id: data.id }
-            : { post }
+            : post
         ),
       }));
     } catch (err) {
@@ -54,7 +54,7 @@ const Post = (props) => {
         results: prevPosts.results.map((post) =>
           post.id === id
             ? { ...post, likes_count: post.likes_count - 1, like_id: null }
-            : { post }
+            : post
         ),
       }));
     } catch (err) {
