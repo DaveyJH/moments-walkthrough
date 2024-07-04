@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
 
 import Form from "react-bootstrap/Form";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Container from "react-bootstrap/Container";
+import Post from "./Post";
+import Asset from "../../components/Asset";
+import PopularProfiles from "../profiles/PopularProfiles";
+import InfiniteScroll from "react-infinite-scroll-component";
+
+import NoResults from "../../assets/images/no-results.png";
 
 import appStyles from "../../assets/css/App.module.css";
 import styles from "../../assets/css/PostsPage.module.css";
-import { useLocation } from "react-router-dom/cjs/react-router-dom.min";
-import { axiosReq } from "../../api/axiosDefaults";
-import Post from "./Post";
 
-import NoResults from "../../assets/images/no-results.png";
-import Asset from "../../components/Asset";
-import InfiniteScroll from "react-infinite-scroll-component";
+import { axiosReq } from "../../api/axiosDefaults";
 import { fetchMoreData } from "../../utils/utils";
-import PopularProfiles from "../profiles/PopularProfiles";
+import { useCurrentUser } from "../../contexts/CurrentUserContext";
 
 function PostsPage({ message, filter = "" }) {
   const [posts, setPosts] = useState({ results: [] });
   const [hasLoaded, setHasLoaded] = useState(false);
   const { pathname } = useLocation;
-
+  const currentUser = useCurrentUser();
   const [query, setQuery] = useState("");
 
   useEffect(() => {
@@ -35,7 +37,7 @@ function PostsPage({ message, filter = "" }) {
     setHasLoaded(false);
     const timer = setTimeout(() => fetchPosts(), query ? 1000 : 0);
     return () => clearTimeout(timer);
-  }, [filter, query, pathname]);
+  }, [filter, query, pathname, currentUser]);
 
   return (
     <Row className="h-100">
