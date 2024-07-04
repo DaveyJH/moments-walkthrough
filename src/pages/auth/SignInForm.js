@@ -15,9 +15,12 @@ import Container from "react-bootstrap/Container";
 
 import axios from "axios";
 import { useSetCurrentUser } from "../../contexts/CurrentUserContext";
+import { useRedirect } from "../../hooks/useRedirect";
+import { setTokenTimestamp } from "../../utils/utils";
 
 function SignInForm() {
   const setCurrentUser = useSetCurrentUser();
+  useRedirect("loggedIn");
 
   const [errors, setErrors] = useState({});
   const [signInData, setSignInData] = useState({
@@ -39,7 +42,8 @@ function SignInForm() {
     try {
       const { data } = await axios.post("/dj-rest-auth/login/", signInData);
       setCurrentUser(data.user);
-      history.push("/");
+      setTokenTimestamp(data);
+      history.goBack();
     } catch (err) {
       setErrors(err.response?.data);
     }

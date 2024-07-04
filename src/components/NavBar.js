@@ -12,6 +12,7 @@ import {
 import { Avatar } from "./Avatar";
 import axios from "axios";
 import useClickOutsideToggler from "../hooks/useClickOutsideToggler";
+import { removeTokenTimestamp } from "../utils/utils";
 
 const NavBar = () => {
   const currentUser = useCurrentUser();
@@ -23,6 +24,7 @@ const NavBar = () => {
     try {
       await axios.post("/dj-rest-auth/logout/");
       setCurrentUser(null);
+      removeTokenTimestamp();
     } catch (err) {
       console.log(err);
     }
@@ -91,11 +93,9 @@ const NavBar = () => {
       fixed="top"
     >
       <Container>
-        <NavLink to="/">
-          <Navbar.Brand href="#home">
-            <img src={logo} alt="logo" height="45" />
-          </Navbar.Brand>
-        </NavLink>
+        <Navbar.Brand as={NavLink} to="/">
+          <img src={logo} alt="logo" height="45" />
+        </Navbar.Brand>
         {currentUser && addPostIcon}
         <Navbar.Toggle
           ref={ref}

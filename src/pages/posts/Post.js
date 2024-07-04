@@ -27,7 +27,7 @@ const Post = (props) => {
     setPosts,
   } = props;
   const currentUser = useCurrentUser();
-  const isOwner = currentUser?.username === owner;
+  const is_owner = currentUser?.username === owner;
   const history = useHistory();
 
   const handleLike = async () => {
@@ -85,7 +85,7 @@ const Post = (props) => {
           </Link>
           <div className="d-flex align-items-center">
             <span>{updated_at}</span>
-            {isOwner && postPage && (
+            {is_owner && postPage && (
               <MoreDropdown
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
@@ -101,7 +101,7 @@ const Post = (props) => {
         {title && <Card.Title className="text-center">{title}</Card.Title>}
         {content && <Card.Text>{content}</Card.Text>}
         <div className={styles.PostBar}>
-          {isOwner ? (
+          {is_owner ? (
             <OverlayTrigger
               placement="top"
               overlay={<Tooltip>You can't like your own post!</Tooltip>}

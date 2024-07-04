@@ -11,6 +11,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Asset from "../../components/Asset";
 import Post from "../posts/Post";
 import PopularProfiles from "./PopularProfiles";
+import { ProfileEditDropdown } from "../../components/MoreDropdown";
 
 import NoResults from "../../assets/images/no-results.png";
 
@@ -32,10 +33,10 @@ function ProfilePage() {
   const currentUser = useCurrentUser();
   const { id } = useParams();
 
-  const setProfileData = useSetProfileData();
+  const { setProfileData, handleFollow, handleUnfollow } = useSetProfileData();
   const { pageProfile } = useProfileData();
   const [profile] = pageProfile.results;
-  const isOwner = currentUser?.username === profile?.owner;
+  const is_owner = currentUser?.username === profile?.owner;
 
   const [profilePosts, setProfilePosts] = useState({ results: [] });
 
@@ -52,7 +53,6 @@ function ProfilePage() {
           pageProfile: { results: [pageProfile] },
         }));
         setProfilePosts(profilePosts);
-        console.log(profilePosts)
         setHasLoaded(true);
       } catch (err) {
         console.log(err);
@@ -63,6 +63,7 @@ function ProfilePage() {
 
   const mainProfile = (
     <>
+      {profile?.is_owner && <ProfileEditDropdown id={profile?.id} />}
       <Row noGutters className="px-3 text-center">
         <Col lg={3} className="text-lg-left">
           <Image
@@ -90,18 +91,18 @@ function ProfilePage() {
         </Col>
         <Col lg={3} className="text-lg-right">
           {currentUser &&
-            !isOwner &&
+            !is_owner &&
             (profile?.following_id ? (
               <Button
                 className={`${btnStyles.Button} ${btnStyles.BlackOutline}`}
-                onClick={() => {}}
+                onClick={() => handleUnfollow(profile)}
               >
                 Unfollow
               </Button>
             ) : (
               <Button
                 className={`${btnStyles.Button} ${btnStyles.Black}`}
-                onClick={() => {}}
+                onClick={() => handleFollow(profile)}
               >
                 Follow
               </Button>
@@ -120,7 +121,7 @@ function ProfilePage() {
       {profilePosts.results.length ? (
         <InfiniteScroll
           children={profilePosts.results.map((post) => (
-            <Post key={post.id} {...post} setPosts={setProfilePosts}/>
+            <Post key={post.id} {...post} setPosts={setProfilePosts} />
           ))}
           dataLength={profilePosts.results.length}
           loader={<Asset spinner />}

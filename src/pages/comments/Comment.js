@@ -21,7 +21,7 @@ const Comment = (props) => {
   } = props;
   const currentUser = useCurrentUser();
   const history = useHistory();
-  const isOwner = currentUser?.username === owner;
+  const is_owner = currentUser?.username === owner;
   const [showEditForm, setShowEditForm] = useState(false);
 
   const handleDelete = async () => {
@@ -68,7 +68,7 @@ const Comment = (props) => {
             <p>{content}</p>
           )}
         </Media.Body>
-        {isOwner && !showEditForm && (
+        {is_owner && !showEditForm && (
           <MoreDropdown
             handleEdit={() => setShowEditForm(true)}
             handleDelete={handleDelete}
